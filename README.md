@@ -21,9 +21,7 @@ To install all necessary Node modules, run the following command from the root o
 ## Development
 Parcel will run a development server which recompiles the code and refreshes the webpage automatically whenever you make changes. Simply start Parcel and go to the provided URL in your browser.
 
-```
-$ npm run dev
-```
+`$ npm run dev`
 
 ## Deployment
 Deploy to GitHub pages as follows
