@@ -1,0 +1,15 @@
+// from: https://old.reddit.com/r/typescript/comments/8ts75d/what_is_a_minimal_typescript_setup/
+// still not entirely sure what all these options do
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es5",
+        "lib": ["es6", "dom"]
+    },
+    "include": ["./src/**/*"],
+    "exclude": [
+        ".git",
+        "node_modules"
+    ]
+}

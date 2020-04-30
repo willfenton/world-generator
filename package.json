@@ -1,0 +1,28 @@
+{
+  "name": "world-generator",
+  "version": "1.0.0",
+  "description": "World generator written in TypeScript for usage in the browser",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "NODE_ENV=production parcel build src/index.html --public-url .",
+    "deploy": "NODE_DEBUG=gh-pages gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willfenton/world-generator.git"
+  },
+  "keywords": [],
+  "author": "Will Fenton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/willfenton/world-generator/issues"
+  },
+  "homepage": "https://willfenton.github.io/world-generator/",
+  "devDependencies": {
+    "gh-pages": "^2.2.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-clean-dist": "0.0.6",
+    "typescript": "^3.8.3"
+  }
+}
