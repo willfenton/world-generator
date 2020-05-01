@@ -6,11 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Generator</title>
 
-    <script src="./index.ts"></script>
+    <script defer src="./index.ts"></script>
+
+    <link rel="stylesheet" href="./style.scss">
 </head>
 
 <body>
-
+    <div id="container">
+        <div id="controls">
+            <p>Seed:</p>
+            <input id="seedInput" type="number" value="0">
+            <button id="generateButton">Generate</button>
+        </div>
+        <div id="content">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
 </body>
 
 </html>
