@@ -1,9 +1,3 @@
-// import * as $ from "jquery";
-// (<any>window).jQuery = $
-
-// import "bootstrap";
-// import 'bootstrap/dist/css/bootstrap.css' // Import precompiled Bootstrap css
-
 import { makeNoise2D } from "open-simplex-noise";
 
 function create2DArray(columns: number, rows: number): Array<number> {
