@@ -123,8 +123,8 @@ const globalFrequency = 10;
 const elevationExponent = 2.25;
 const moistureExponent = 1.35;
 
-const width = 1024;
-const height = 1024;
+const width = 256;
+const height = 256;
 
 let elevationNoise: Function;
 let moistureNoise: Function;
@@ -160,7 +160,8 @@ function generateWorld(): void {
             let biome = getBiome(pixelElevation, pixelMoisture);
 
             if (biome === biomes.OCEAN) {
-                elevation[x][y] = 0.119;
+                // elevation[x][y] = 0.119;
+                elevation[x][y] = 0;
             }
         }
     }
@@ -203,6 +204,49 @@ function setLight(scene) {
     // scene.add(new THREE.DirectionalLightHelper(light, 2));
 }
 
+function createBox(scene: THREE.Scene, height = 0.14, size = 1, depth = 0.005): void {
+    const loadManager = new THREE.LoadingManager();
+    const loader = new THREE.TextureLoader(loadManager);
+
+    const woodMaterial = new THREE.MeshBasicMaterial({ map: loader.load('https://threejsfundamentals.org/threejs/lessons/resources/images/compressed-but-large-wood-texture.jpg') });
+
+    let boxGeometry: THREE.BoxGeometry;
+    let boxMesh: THREE.Mesh;
+
+    boxGeometry = new THREE.BoxGeometry(size, depth, size);
+    boxMesh = new THREE.Mesh(boxGeometry, woodMaterial);
+    boxMesh.translateY(-(depth / 2) - 0.001);
+    scene.add(boxMesh);
+
+    boxGeometry = new THREE.BoxGeometry(depth, height + depth, size + depth);
+    boxMesh = new THREE.Mesh(boxGeometry, woodMaterial);
+    boxMesh.translateX((size / 2) + (depth / 2));
+    boxMesh.translateY((height / 2) - (depth / 2));
+    boxMesh.translateZ(depth / 2);
+    scene.add(boxMesh);
+
+    boxGeometry = new THREE.BoxGeometry(depth, height + depth, size + depth);
+    boxMesh = new THREE.Mesh(boxGeometry, woodMaterial);
+    boxMesh.translateX(-(size / 2) + -(depth / 2));
+    boxMesh.translateY((height / 2) - (depth / 2));
+    boxMesh.translateZ(-depth / 2);
+    scene.add(boxMesh);
+
+    boxGeometry = new THREE.BoxGeometry(size + depth, height + depth, depth);
+    boxMesh = new THREE.Mesh(boxGeometry, woodMaterial);
+    boxMesh.translateX(-depth / 2);
+    boxMesh.translateY((height / 2) - (depth / 2));
+    boxMesh.translateZ((size / 2) + (depth / 2));
+    scene.add(boxMesh);
+
+    boxGeometry = new THREE.BoxGeometry(size + depth, height + depth, depth);
+    boxMesh = new THREE.Mesh(boxGeometry, woodMaterial);
+    boxMesh.translateX(depth / 2);
+    boxMesh.translateY((height / 2) - (depth / 2));
+    boxMesh.translateZ(-(size / 2) + -(depth / 2));
+    scene.add(boxMesh);
+}
+
 function init(): void {
 
     container = document.getElementById('container');
@@ -219,7 +263,9 @@ function init(): void {
 
     setLight(scene);
 
-    createHeightmap2();
+    createHeightmap();
+
+    createBox(scene);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -236,7 +282,7 @@ function init(): void {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    function createHeightmap2() {
+    function createHeightmap() {
         let plane = new THREE.PlaneBufferGeometry(1, 1, width - 1, height - 1);
         let position = plane.attributes.position;
 
