@@ -160,8 +160,8 @@ function generateWorld(): void {
             let biome = getBiome(pixelElevation, pixelMoisture);
 
             if (biome === biomes.OCEAN) {
-                // elevation[x][y] = 0.119;
-                elevation[x][y] = 0;
+                elevation[x][y] = 0.119;
+                // elevation[x][y] = 0;
             }
         }
     }
