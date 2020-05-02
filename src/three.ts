@@ -25,8 +25,8 @@ function noise(nx: number, ny: number, noiseFunc: Function, frequency = 1.0): nu
 function getElevation(x: number, y: number): number {
     let elevation = 0;
 
-    const nx = x / maxAxis;
-    const ny = y / maxAxis;
+    const nx = (x / maxAxis) - 0.5;
+    const ny = (y / maxAxis) - 0.5;
 
     elevation += 1 * noise(nx, ny, elevationNoise, 1);
     elevation += 0.5 * noise(nx, ny, elevationNoise, 2);
@@ -42,8 +42,8 @@ function getElevation(x: number, y: number): number {
 function getMoisture(x: number, y: number): number {
     let moisture = 0;
 
-    const nx = x / maxAxis;
-    const ny = y / maxAxis;
+    const nx = (x / maxAxis) - 0.5;
+    const ny = (y / maxAxis) - 0.5;
 
     moisture += 1 * noise(nx, ny, moistureNoise, 1);
     moisture += 0.5 * noise(nx, ny, moistureNoise, 2);
@@ -119,12 +119,12 @@ const biomes = {
 // let seed: number;
 const seed = 0;
 
-const globalFrequency = 7.5;
+const globalFrequency = 10;
 const elevationExponent = 2.25;
 const moistureExponent = 1.35;
 
-const width = 256;
-const height = 256;
+const width = 1024;
+const height = 1024;
 
 let elevationNoise: Function;
 let moistureNoise: Function;
@@ -178,136 +178,103 @@ var windowHalfY = window.innerHeight / 2;
 
 generateWorld();
 
+function setLight(scene) {
+    let light = new THREE.DirectionalLight(0xffffff, 1);
+    light.castShadow = true;
+
+    // light.shadow.bias = -0.0001;
+
+    light.shadow.camera.left = -1; // --------- added
+    light.shadow.camera.right = 1;
+    light.shadow.camera.top = 1;
+    light.shadow.camera.bottom = -1;
+    light.shadow.camera.near = 0;
+    light.shadow.camera.far = 3;
+
+    light.shadow.mapSize.width = 4096;
+    light.shadow.mapSize.height = 4096;
+
+    // scene.add(new THREE.AxesHelper(300));
+
+    // scene.add(new THREE.CameraHelper(light.shadow.camera)); // -------- added
+
+    light.position.set(1, 1, 1); // CHANGED
+    scene.add(light);
+    // scene.add(new THREE.DirectionalLightHelper(light, 2));
+}
+
 function init(): void {
 
     container = document.getElementById('container');
 
     const fov = 60;
     const aspect = window.innerWidth / window.innerHeight;
-    const near = 0.1;
-    const far = 500;
+    const near = 0.01;
+    const far = 100;
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(20, 100, 20);
+    camera.position.set(1, 1, 0);
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x87CEEB);
 
-    function addLight(x: number, y: number, z: number): void {
-        const color = 0xFFFFFF;
-        const intensity = 1;
-        const light = new THREE.DirectionalLight(color, intensity);
-        light.position.set(x, y, z);
-        scene.add(light);
-    }
+    setLight(scene);
 
-    addLight(-1, 2, 4);
-    addLight(1, 2, -2);
+    createHeightmap2();
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // renderer.shadowMap.renderSingleSided = false;
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
     controls.update();
 
+    container.appendChild(renderer.domElement);
+
     window.addEventListener('resize', onWindowResize, false);
 
-    createHeightmap();
+    function createHeightmap2() {
+        let plane = new THREE.PlaneBufferGeometry(1, 1, width - 1, height - 1);
+        let position = plane.attributes.position;
 
-    function createHeightmap() {
+        let colors = [];
 
-        const geometry = new THREE.Geometry();
+        for (let z = 0; z < height; z++) {
+            for (let x = 0; x < width; x++) {
+                const i = (z * height) + x;
+                position.setZ(i, elevation[x][z] / 5);
 
-        const cellsAcross = width - 1;
-        const cellsDeep = height - 1;
-        for (let z = 0; z < cellsDeep; ++z) {
-            for (let x = 0; x < cellsAcross; ++x) {
-                // the corner positions
-                const x0 = x;
-                const x1 = x + 1;
-                const z0 = z;
-                const z1 = z + 1;
+                const biome = getBiome(elevation[x][z], moisture[x][z]);
 
-                // look up the height for the for points
-                // around this cell
-                const e00 = elevation[x0][z0];
-                const e01 = elevation[x1][z0];
-                const e10 = elevation[x0][z1];
-                const e11 = elevation[x1][z1];
-
-                const em = (e00 + e01 + e10 + e11) / 4;
-
-                const m00 = moisture[x0][z0];
-                const m01 = moisture[x1][z0];
-                const m10 = moisture[x0][z1];
-                const m11 = moisture[x1][z1];
-
-                const mm = (m00 + m01 + m10 + m11) / 4;
-
-                const biome = getBiome(em, mm);
-
-                const h00 = e00 * 48;
-                const h01 = e01 * 48;
-                const h10 = e10 * 48;
-                const h11 = e11 * 48;
-
-                // compute the average height
-                const hm = (h00 + h01 + h10 + h11) / 4;
-
-                // remember the first index of these 5 vertices
-                const ndx = geometry.vertices.length;
-
-                // add the 4 corners for this cell and the midpoint
-                geometry.vertices.push(
-                    new THREE.Vector3(x0, h00, z0),
-                    new THREE.Vector3(x1, h01, z0),
-                    new THREE.Vector3(x0, h10, z1),
-                    new THREE.Vector3(x1, h11, z1),
-                    new THREE.Vector3((x0 + x1) / 2, hm, (z0 + z1) / 2),
-                );
-
-                let faces = [new THREE.Face3(ndx, ndx + 4, ndx + 1),
-                new THREE.Face3(ndx + 1, ndx + 4, ndx + 3),
-                new THREE.Face3(ndx + 3, ndx + 4, ndx + 2),
-                new THREE.Face3(ndx + 2, ndx + 4, ndx + 0)];
-
-                for (let face of faces) {
-                    face.vertexColors = [
-                        (new THREE.Color()).setRGB(biome.r / 255, biome.g / 255, biome.b / 255),
-                        (new THREE.Color()).setRGB(biome.r / 255, biome.g / 255, biome.b / 255),
-                        (new THREE.Color()).setRGB(biome.r / 255, biome.g / 255, biome.b / 255)
-                    ];
-                    geometry.faces.push(face);
-                }
-
-                // add the texture coordinates for each vertex of each face.
-                const u0 = x / cellsAcross;
-                const v0 = z / cellsDeep;
-                const u1 = (x + 1) / cellsAcross;
-                const v1 = (z + 1) / cellsDeep;
-                const um = (u0 + u1) / 2;
-                const vm = (v0 + v1) / 2;
-                geometry.faceVertexUvs[0].push(
-                    [new THREE.Vector2(u0, v0), new THREE.Vector2(um, vm), new THREE.Vector2(u1, v0)],
-                    [new THREE.Vector2(u1, v0), new THREE.Vector2(um, vm), new THREE.Vector2(u1, v1)],
-                    [new THREE.Vector2(u1, v1), new THREE.Vector2(um, vm), new THREE.Vector2(u0, v1)],
-                    [new THREE.Vector2(u0, v1), new THREE.Vector2(um, vm), new THREE.Vector2(u0, v0)],
-                );
+                colors.push(biome.r / 255, biome.g / 255, biome.b / 255);
             }
         }
 
-        geometry.computeFaceNormals();
+        plane.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
-        // center the geometry
-        geometry.translate(width / -2, 0, height / -2);
+        let basicMaterial = new THREE.MeshBasicMaterial({ vertexColors: true });
+        let basicMesh = new THREE.Mesh(plane, basicMaterial);
 
-        // const material = new THREE.MeshPhongMaterial({ color: 'green', map: texture });
-        let material = new THREE.MeshBasicMaterial({ vertexColors: THREE.VertexColors });
+        let shadowMaterial = new THREE.ShadowMaterial({ opacity: .5 });
+        let shadowMesh = new THREE.Mesh(plane, shadowMaterial);
 
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+        basicMesh.castShadow = false;
+        basicMesh.receiveShadow = false;
+
+        shadowMesh.castShadow = true;
+        shadowMesh.receiveShadow = true;
+
+        basicMesh.rotation.x = -Math.PI / 2;
+        shadowMesh.rotation.x = -Math.PI / 2;
+
+        plane.computeFaceNormals();
+        plane.computeVertexNormals();
+
+        scene.add(basicMesh);
+        scene.add(shadowMesh);
     }
 }
 
