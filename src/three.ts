@@ -123,8 +123,8 @@ const globalFrequency = 10;
 const elevationExponent = 2.25;
 const moistureExponent = 1.35;
 
-const width = 2048;
-const height = 2048;
+const width = 1024;
+const height = 1024;
 
 let elevationNoise: Function;
 let moistureNoise: Function;
