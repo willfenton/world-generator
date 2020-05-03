@@ -4,21 +4,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>World Generator</title>
 
-    <!-- <script defer src="./index.ts"></script> -->
-    <script defer src="./three.ts"></script>
+    <!-- Code -->
+    <script defer src="./index.ts"></script>
+    <!-- <script defer src="./three.ts"></script> -->
 
+    <!-- Styles -->
     <link rel="stylesheet" href="./style.scss">
+
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+        integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
 </head>
 
 <body>
-    <div id="container">
-        <!-- <div id="controls" style="position: fixed;">
-            <p>Seed: <input id="seedInput" type="number" value="0"></p>
-            <button id="generateButton">Generate</button>
-        </div> -->
+    <!-- Controls -->
+    <div id="overlay">
+
+        <!-- Button which shows / hides the controls -->
+        <button id="expandControlsButton" class="btn" data-toggle="collapse" data-target="#controls">
+            <i class="fas fa-sliders-h"></i>
+        </button>
+
+        <!-- Control panel -->
+        <div id="controls" class="collapse show card">
+
+            <!-- Title -->
+            <div class="card-header text-center">
+                <h3 id="controlsTitle" class="card-title">
+                    <b>World Generator</b>
+                </h3>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body">
+                <form id="controlsForm" defaultValue="0" autocomplete="off">
+
+                    <!-- Seed input -->
+                    <div class="form-group">
+                        <label for="seedInput">Seed <i class="far fa-question-circle question-icon" rel="tooltip"
+                                data-placement="top" data-title="Every seed generates a unique world"></i></label>
+                        <input class="form-control" id="seedInput" type="number" value="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="resolutionSelect">Resolution <i class="far fa-question-circle question-icon"
+                                rel="tooltip" data-placement="top"
+                                data-title="Larger resolutions look better but decrease performance"></i></label>
+                        <select class="form-control" id="resolutionSelect">
+                            <option value="256">256</option>
+                            <option selected value="512">512</option>
+                            <option value="1024">1024</option>
+                            <option value="2048">2048</option>
+                        </select>
+                    </div>
+
+                    <!-- Enable / disable shadows -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked="true" id="shadowsCheck">
+                        <label class="form-check-label" for="shadowsCheck">Shadows</label>
+                    </div>
+
+                    <!-- Enable / disable wooden box around world -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" checked="true" id="boxCheck">
+                        <label class="form-check-label" for="boxCheck">Show Box</label>
+                    </div>
+
+                    <!-- Button to generate world using selected parameters -->
+                    <button id="generateButton" type="submit" class="btn btn-secondary">Generate</button>
+
+                </form>
+            </div>
+
+        </div>
     </div>
+
+    <!-- Contains the 3D scene -->
+    <div id="container"></div>
+
 </body>
 
 </html>

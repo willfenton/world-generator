@@ -16,7 +16,31 @@ canvas {
     flex-direction: row;
 }
 
-#content {
-    width: 100%;
-    height: 100%;
+#overlay {
+    position: fixed;
+    margin: 1.25rem;
+    pointer-events: none;
+}
+
+#expandControlsButton {
+    background-color: white;
+    pointer-events: auto;
+}
+
+#controls {
+    margin-top: 1.25rem;
+    pointer-events: auto;
+}
+
+#controlsTitle {
+    margin: 0;
+}
+
+#generateButton {
+    margin-top: 1rem;
+}
+
+.question-icon {
+    color: grey;
+    // font-size: larger;
 }

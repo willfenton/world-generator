@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "open-simplex-noise": "^2.3.1",
-    "typescript": "^3.8.3",
-    "three": "^0.116.0"
+    "pure-rand": "^2.0.0",
+    "three": "^0.116.0",
+    "typescript": "^3.8.3"
   }
 }

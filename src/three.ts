@@ -3,6 +3,10 @@ import { makeNoise2D } from "open-simplex-noise";
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+$(function () {
+    $("[rel='tooltip']").tooltip();
+})
+
 function create2DArray(columns: number, rows: number): Array<number> {
     var array = new Array(columns);
 
@@ -123,8 +127,8 @@ const globalFrequency = 10;
 const elevationExponent = 2.25;
 const moistureExponent = 1.35;
 
-const width = 1024;
-const height = 1024;
+const width = 512;
+const height = 512;
 
 let elevationNoise: Function;
 let moistureNoise: Function;
@@ -179,13 +183,11 @@ var windowHalfY = window.innerHeight / 2;
 
 generateWorld();
 
-function setLight(scene) {
+function setLight(scene: THREE.Scene): void {
     let light = new THREE.DirectionalLight(0xffffff, 1);
     light.castShadow = true;
 
-    // light.shadow.bias = -0.0001;
-
-    light.shadow.camera.left = -1; // --------- added
+    light.shadow.camera.left = -1;
     light.shadow.camera.right = 1;
     light.shadow.camera.top = 1;
     light.shadow.camera.bottom = -1;
@@ -195,12 +197,11 @@ function setLight(scene) {
     light.shadow.mapSize.width = 4096;
     light.shadow.mapSize.height = 4096;
 
-    // scene.add(new THREE.AxesHelper(300));
-
-    // scene.add(new THREE.CameraHelper(light.shadow.camera)); // -------- added
-
-    light.position.set(1, 1, 1); // CHANGED
+    light.position.set(1, 1, 1);
     scene.add(light);
+
+    // scene.add(new THREE.AxesHelper(300));
+    // scene.add(new THREE.CameraHelper(light.shadow.camera)); // -------- added
     // scene.add(new THREE.DirectionalLightHelper(light, 2));
 }
 
@@ -282,7 +283,7 @@ function init(): void {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    function createHeightmap() {
+    function createHeightmap(): void {
         let plane = new THREE.PlaneBufferGeometry(1, 1, width - 1, height - 1);
         let position = plane.attributes.position;
 
@@ -324,7 +325,7 @@ function init(): void {
     }
 }
 
-function onWindowResize() {
+function onWindowResize(): void {
     windowHalfX = window.innerWidth / 2;
     windowHalfY = window.innerHeight / 2;
 
@@ -334,13 +335,13 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function animate() {
+function animate(): void {
     requestAnimationFrame(animate);
 
     render();
 }
 
-function render() {
+function render(): void {
     camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
