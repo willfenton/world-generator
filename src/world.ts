@@ -102,8 +102,8 @@ export class World {
     getElevation(x: number, y: number): number {
         let elevation = 0;
 
-        const nx = x / this.resolution;
-        const ny = y / this.resolution;
+        const nx = (x / this.resolution) - 0.5;
+        const ny = (y / this.resolution) - 0.5;
 
         elevation += 1 * noise(nx, ny, this.elevationNoise, 1 * this.baseFrequency, this.noiseMin, this.noiseMax);
         elevation += 0.5 * noise(nx, ny, this.elevationNoise, 2 * this.baseFrequency, this.noiseMin, this.noiseMax);
@@ -119,8 +119,8 @@ export class World {
     getMoisture(x: number, y: number): number {
         let moisture = 0;
 
-        const nx = x / this.resolution;
-        const ny = y / this.resolution;
+        const nx = (x / this.resolution) - 0.5;
+        const ny = (y / this.resolution) - 0.5;
 
         moisture += 1 * noise(nx, ny, this.moistureNoise, 1 * this.baseFrequency, this.noiseMin, this.noiseMax);
         moisture += 0.5 * noise(nx, ny, this.moistureNoise, 2 * this.baseFrequency, this.noiseMin, this.noiseMax);

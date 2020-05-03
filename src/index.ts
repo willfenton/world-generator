@@ -1,8 +1,6 @@
 import { World } from "./world";
 import { ThreeScene } from "./3D";
 
-import * as THREE from 'three';
-
 
 $(function () {
     $("[rel='tooltip']").tooltip();
@@ -56,10 +54,13 @@ const generateButton: HTMLButtonElement = document.querySelector("#generateButto
 
 const resolutionSelect: HTMLSelectElement = document.querySelector("#resolutionSelect");
 
+const sizeRange: HTMLInputElement = document.querySelector("#sizeRange");
+
 const form: HTMLFormElement = document.querySelector("#controlsForm");
 form.onsubmit = function () {
     world.setSeed(parseInt(seedInput.value));
     world.resolution = parseInt(resolutionSelect.value);
+    world.baseFrequency = Number(sizeRange.value);
     world.generate();
     scene.removesMeshesWithName("terrain");
     scene.createHeightmap();

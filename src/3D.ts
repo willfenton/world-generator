@@ -3,6 +3,7 @@ import { World } from "./world";
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+
 export class ThreeScene {
     // container div
     container: HTMLElement;
@@ -90,7 +91,9 @@ export class ThreeScene {
         for (let z = 0; z < this.world.resolution; z++) {
             for (let x = 0; x < this.world.resolution; x++) {
                 const i = (z * this.world.resolution) + x;
-                position.setZ(i, this.world.elevation[x][z] / 5);
+                const elevation = this.world.elevation[x][z];
+                const height = (elevation / this.world.baseFrequency);
+                position.setZ(i, height);
 
                 const biome = this.world.getBiome(x, z);
 
