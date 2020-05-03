@@ -3,15 +3,15 @@ World generator written in TypeScript for usage in the browser
 
 ## Goals:
 
-* ~Height map~
-* ~Humidity~
+* Height map :heavy_check_mark:
+* Humidity :heavy_check_mark:
 * Biomes
 * Rivers
 * Lakes
 * Ocean
 * Cities / Landmarks
-* 2D view from above
-* ~Variable 3D view~
+* 2D view from above :hammer:
+* Variable 3D view :heavy_check_mark:
 
 ## Setup
 To install all necessary Node modules, run the following command from the root of the repository
