@@ -74,7 +74,7 @@ export class ThreeScene {
         this.light.shadow.mapSize.width = 4096;
         this.light.shadow.mapSize.height = 4096;
 
-        this.light.position.set(1, Math.sqrt(2), 1);
+        this.light.position.set(1, 1, 1);
         this.scene.add(this.light);
 
         // this.scene.add(new THREE.AxesHelper(300));
